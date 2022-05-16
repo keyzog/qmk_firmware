@@ -3,7 +3,7 @@
 #ifdef ENCODER_ENABLE
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-    if (get_highest_layer(layer_state|default_layer_state) > 0) {
+    if (get_highest_layer(layer_state|default_layer_state) == 5) {
         if (index == 0) {
             // if (clockwise) {
             //     tap_code(KC_WH_D);
