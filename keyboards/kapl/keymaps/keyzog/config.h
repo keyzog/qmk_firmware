@@ -5,9 +5,10 @@
 /* encoder support */
 #define ENCODERS_PAD_A { D0 }
 #define ENCODERS_PAD_B { D1 }
+#define ENCODER_RESOLUTIONS { 2 }
 #define ENCODERS_PAD_A_RIGHT { D1 }
 #define ENCODERS_PAD_B_RIGHT { D0 }
-#define ENCODER_RESOLUTIONS { 2, 2 }
+#define ENCODER_RESOLUTIONS_RIGHT { 2 }
 
 #define DYNAMIC_KEYMAP_LAYER_COUNT 6
 

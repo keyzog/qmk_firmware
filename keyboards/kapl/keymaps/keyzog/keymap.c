@@ -85,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [3] = LAYOUT( // game
   //┌────────┬────────┬────────┬────────┬────────┬────────┬────────┐           ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┐
-     KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,               KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   RESET,
+     KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,               KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,   QK_RBT,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤           ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      KC_NO,   RGB_SAI, RGB_SPI, RGB_VAI, RGB_HUI, RGB_MOD, KC_NO,               KC_NO,   KC_VOLU, KC_NO,   KC_NO,   KC_NO,   KC_NO,   KC_NO,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤           ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
@@ -115,11 +115,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┬────────┐           ┌────────┬────────┬────────┬────────┬────────┬────────┬────────┐
      ____,    ____,    ____,    ____,    ____,    ____,    ____,                ____,    BG_HUI,  BG_SAI,  BG_VAI,  ____,    ____,    ____,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤           ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     ____,    ____,    ____,    ____,    ____,    ____,    ____,                ____,    BG_HUD,  BG_SAD,  BG_VAD,  ____,    ____,    ____,
+     KC_NO,   RGB_SAI, RGB_SPI, RGB_VAI, RGB_HUI, RGB_MOD, KC_NO,               ____,    BG_HUD,  BG_SAD,  BG_VAD,  ____,    ____,    ____,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤           ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     ____,    ____,    ____,    ____,    ____,    ____,    ____,                ____,    ____,    ____,    ____,    ____,    ____,    ____,
+     KC_NO,   RGB_SAD, RGB_SPD, RGB_VAD, RGB_HUD, RGB_RMOD,KC_NO,               ____,    ____,    ____,    ____,    ____,    ____,    ____,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤           ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     ____,    ____,    ____,    ____,    ____,    ____,    ____,                ____,    BG_TOG,  LBI_TOG, ____,    ____,    ____,    ____,
+     KC_NO,   KC_NO,   KC_NO,   KC_NO,   RGB_TOG, RGB_M_P, KC_NO,               ____,    BG_TOG,  LBI_TOG, ____,    ____,    ____,    ____,
   //├────────┼────────┼────────┼────────┼────────┼─┬──────┴─┬──────┴─┐       ┌─┴──────┬─┴──────┬─┼────────┼────────┼────────┼────────┼────────┤
      ____,    ____,    ____,    ____,    ____,      ____,    ____,            ____,    ____,      ____,    ____,    ____,    ____,    ____
   //└────────┴────────┴────────┴────────┴────────┘ └────────┴────────┘       └────────┴────────┘ └────────┴────────┴────────┴────────┴────────┘
@@ -252,7 +252,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 
 #ifdef RGB_MATRIX_ENABLE
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     // ОТДЕЛЬНОЕ УПРАВЛЕНИЕ НИЖНЕЙ ПОДСВЕТКОЙ
     if(bgl_act != 0) {
         HSV hsv = {
@@ -265,6 +265,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         RGB rgb = hsv_to_rgb(hsv);
         for (uint8_t i = 0; i < 9; i++) {
             rgb_matrix_set_color(i, rgb.r, rgb.g, rgb.b);
+            rgb_matrix_set_color(i+44, rgb.r, rgb.g, rgb.b);
         }
     }
 
@@ -285,11 +286,14 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
         for (uint8_t i = 0; i < size; i++) {
             uint8_t led_num = state[lbg_pos-1][i] - 1;
             if(led_num != -1) {
-                hsv.h = 47 * get_highest_layer(layer_state);
+                hsv.h = 47 * get_highest_layer(layer_state | default_layer_state);
                 rgb = hsv_to_rgb(hsv);
                 rgb_matrix_set_color(led_num, rgb.r, rgb.g, rgb.b);
+                rgb_matrix_set_color(led_num + 44, rgb.r, rgb.g, rgb.b);
             }
         }
     }
+    
+    return false;
 }
 #endif
