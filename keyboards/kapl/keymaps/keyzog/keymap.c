@@ -35,7 +35,8 @@ enum custom_keycodes {
     BG_SAI,
     BG_SAD,
     BG_VAI,
-    BG_VAD
+    BG_VAD,
+    GM_TAB // game_tab
 };
 
 
@@ -166,8 +167,31 @@ void housekeeping_task_user(void) {
     }
 }
 
+bool game_tab_active = false;
+
+bool process_custom_game_tab(uint16_t keycode, keyrecord_t *record) {
+   if(keycode == GM_TAB) {
+      if (record->event.pressed) {
+         game_tab_active = true;
+         // tap_code16(KC_TAB);
+      } else {
+         game_tab_active = false;
+      }
+   }
+
+   if(game_tab_active && keycode != KC_TAB) {
+      if(record->event.pressed) {
+         tap_code16(KC_TAB);
+      }
+   }
+
+   return true;
+}
+
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+   process_custom_game_tab(keycode, record);
+
   switch (keycode) {
     case LBI_TOG:
       if (record->event.pressed) {
